@@ -42,6 +42,28 @@
       pointer-events: none;
     }
     
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .title-font {
+        font-size: clamp(1.875rem, 5vw, 3rem);
+      }
+      
+      .dna-helix {
+        font-size: 80px !important;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .title-font {
+        font-size: clamp(1.5rem, 4vw, 2.25rem);
+      }
+      
+      .dna-helix {
+        font-size: 60px !important;
+        opacity: 0.05 !important;
+      }
+    }
+    
     .option-btn {
       transition: all 0.3s ease;
       position: relative;
@@ -100,107 +122,115 @@
   <style>body { box-sizing: border-box; }</style>
   <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
  </head>
- <body class="min-h-screen bg-slate-950 text-white overflow-x-hidden">
+ <body class="h-full bg-slate-950 text-white overflow-auto">
   <div id="app" class="min-h-full relative">
    <div class="scan-overlay"></div><!-- Start Screen -->
-   <div id="start-screen" class="min-h-full flex flex-col items-center justify-center p-6 relative">
+   <div id="start-screen" class="min-h-full flex flex-col items-center justify-center p-4 md:p-6 relative">
     <div class="dna-helix top-10 left-10">
      🧬
     </div>
     <div class="dna-helix bottom-20 right-10">
      ⚗️
     </div>
-    <div class="text-center max-w-2xl">
-     <div class="float-animation mb-8">
-      <div class="w-32 h-32 mx-auto bg-gradient-to-br from-cyan-500 to-emerald-500 rounded-2xl flex items-center justify-center glow-effect"><i data-lucide="flask-conical" class="w-16 h-16 text-white"></i>
+    <div class="text-center max-w-2xl w-full">
+     <div class="float-animation mb-6 md:mb-8">
+      <div class="w-24 md:w-32 h-24 md:h-32 mx-auto bg-gradient-to-br from-cyan-500 to-emerald-500 rounded-2xl flex items-center justify-center glow-effect">
+       <i data-lucide="flask-conical" class="w-12 md:w-16 h-12 md:h-16 text-white"></i>
       </div>
      </div>
-     <h1 id="main-title" class="title-font text-4xl md:text-6xl font-black mb-4 bg-gradient-to-r from-cyan-400 via-emerald-400 to-cyan-400 bg-clip-text text-transparent">ESCAPE DEL LABORATORIO</h1>
-     <p id="welcome-text" class="text-slate-400 text-lg mb-8 leading-relaxed">Has quedado atrapado en un laboratorio científico avanzado. Para escapar, deberás demostrar tus conocimientos en Ciencias Naturales atravesando 7 salas de desafíos.</p>
-     <div class="bg-slate-900/80 border border-cyan-500/30 rounded-xl p-6 mb-8">
-      <h3 class="title-font text-cyan-400 font-bold mb-4 flex items-center justify-center gap-2"><i data-lucide="alert-triangle" class="w-5 h-5"></i> PROTOCOLO DE SEGURIDAD</h3>
-      <ul class="text-slate-300 text-sm space-y-2 text-left">
-       <li class="flex items-start gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0"></i> Cada sala contiene 5 desafíos científicos</li>
-       <li class="flex items-start gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0"></i> Responde correctamente para desbloquear la siguiente puerta</li>
-       <li class="flex items-start gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0"></i> Si te equivocas, recibirás una explicación antes de continuar</li>
+     <h1 id="main-title" class="title-font text-2xl md:text-4xl lg:text-6xl font-black mb-3 md:mb-4 bg-gradient-to-r from-cyan-400 via-emerald-400 to-cyan-400 bg-clip-text text-transparent">ESCAPE DEL LABORATORIO</h1>
+     <p id="welcome-text" class="text-slate-400 text-sm md:text-base lg:text-lg mb-6 md:mb-8 leading-relaxed px-2">Has quedado atrapado en un laboratorio científico avanzado. Para escapar, deberás demostrar tus conocimientos en Ciencias Naturales atravesando 7 salas de desafíos.</p>
+     <div class="bg-slate-900/80 border border-cyan-500/30 rounded-xl p-4 md:p-6 mb-6 md:mb-8 mx-2 md:mx-0">
+      <h3 class="title-font text-cyan-400 font-bold mb-3 md:mb-4 flex items-center justify-center gap-2 text-sm md:text-base"><i data-lucide="alert-triangle" class="w-4 md:w-5 h-4 md:h-5"></i> PROTOCOLO DE SEGURIDAD</h3>
+      <ul class="text-slate-300 text-xs md:text-sm space-y-2 text-left">
+       <li class="flex items-start gap-2"><i data-lucide="check-circle" class="w-3 md:w-4 h-3 md:h-4 text-emerald-400 mt-0.5 flex-shrink-0"></i> Cada sala contiene 5 desafíos científicos</li>
+       <li class="flex items-start gap-2"><i data-lucide="check-circle" class="w-3 md:w-4 h-3 md:h-4 text-emerald-400 mt-0.5 flex-shrink-0"></i> Responde correctamente para desbloquear la siguiente puerta</li>
+       <li class="flex items-start gap-2"><i data-lucide="check-circle" class="w-3 md:w-4 h-3 md:h-4 text-emerald-400 mt-0.5 flex-shrink-0"></i> Si te equivocas, recibirás una explicación antes de continuar</li>
       </ul>
-     </div><button onclick="startGame()" class="title-font bg-gradient-to-r from-cyan-500 to-emerald-500 hover:from-cyan-400 hover:to-emerald-400 text-slate-950 font-bold py-4 px-12 rounded-xl text-xl transition-all transform hover:scale-105 glow-effect"> <span class="flex items-center gap-3"> <i data-lucide="play" class="w-6 h-6"></i> INICIAR ESCAPE </span> </button>
+     </div><button onclick="startGame()" class="title-font bg-gradient-to-r from-cyan-500 to-emerald-500 hover:from-cyan-400 hover:to-emerald-400 text-slate-950 font-bold py-3 md:py-4 px-8 md:px-12 rounded-xl text-lg md:text-xl transition-all transform hover:scale-105 glow-effect mx-4 md:mx-0"> <span class="flex items-center gap-2 md:gap-3 justify-center"> <i data-lucide="play" class="w-5 md:w-6 h-5 md:h-6"></i> INICIAR ESCAPE </span> </button>
     </div>
    </div><!-- Room Selection -->
-   <div id="room-selection" class="hidden min-h-full p-6">
+   <div id="room-selection" class="hidden min-h-full p-4 md:p-6">
     <div class="max-w-6xl mx-auto">
-     <div class="flex items-center justify-between mb-8">
-      <h2 class="title-font text-2xl md:text-3xl font-bold text-cyan-400">MAPA DEL LABORATORIO</h2>
-      <div class="flex items-center gap-4">
-       <div class="bg-slate-900 border border-cyan-500/30 rounded-lg px-4 py-2"><span class="text-slate-400 text-sm">Progreso:</span> <span id="overall-progress" class="title-font text-cyan-400 font-bold ml-2">0%</span>
-       </div>
+     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 md:mb-8 gap-4">
+      <h2 class="title-font text-xl md:text-2xl lg:text-3xl font-bold text-cyan-400">MAPA DEL LABORATORIO</h2>
+      <div class="flex items-center gap-4 bg-slate-900 border border-cyan-500/30 rounded-lg px-3 md:px-4 py-2 w-full sm:w-auto"><span class="text-slate-400 text-xs md:text-sm">Progreso:</span> <span id="overall-progress" class="title-font text-cyan-400 font-bold ml-2">0%</span>
       </div>
      </div>
-     <div id="rooms-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"><!-- Rooms will be inserted here -->
+     <div id="rooms-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
+      <!-- Rooms will be inserted here -->
      </div>
     </div>
    </div><!-- Game Screen -->
-   <div id="game-screen" class="hidden min-h-full p-4 md:p-6">
-    <div class="max-w-4xl mx-auto"><!-- Header -->
-     <div class="flex items-center justify-between mb-6">
-      <div class="flex items-center gap-3">
-       <button onclick="showRoomSelection()" class="flex items-center gap-2 text-slate-400 hover:text-cyan-400 transition-colors"> <i data-lucide="map" class="w-5 h-5"></i> <span>Mapa</span> </button> <button onclick="showMenuModal()" class="flex items-center gap-2 text-slate-400 hover:text-cyan-400 transition-colors"> <i data-lucide="home" class="w-5 h-5"></i> <span>Menú</span> </button>
+   <div id="game-screen" class="hidden min-h-full p-3 md:p-4 lg:p-6">
+    <div class="max-w-4xl mx-auto">
+     <!-- Header -->
+     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 md:mb-6 gap-3">
+      <div class="flex flex-wrap items-center gap-2 md:gap-3"><button onclick="showRoomSelection()" class="flex items-center gap-2 text-slate-400 hover:text-cyan-400 transition-colors text-sm md:text-base"> <i data-lucide="map" class="w-4 md:w-5 h-4 md:h-5"></i> <span>Mapa</span> </button> <button onclick="showMenuModal()" class="flex items-center gap-2 text-slate-400 hover:text-cyan-400 transition-colors text-sm md:text-base"> <i data-lucide="home" class="w-4 md:w-5 h-4 md:h-5"></i> <span>Menú</span> </button>
       </div>
-      <div class="flex items-center gap-4">
-       <div class="bg-slate-900 border border-cyan-500/30 rounded-lg px-3 py-1.5"><span class="text-slate-400 text-xs">SALA</span> <span id="current-room-num" class="title-font text-cyan-400 font-bold ml-2">1</span> <span class="text-slate-500">/7</span>
+      <div class="flex flex-wrap items-center gap-2 md:gap-4 w-full sm:w-auto">
+       <div class="bg-slate-900 border border-cyan-500/30 rounded-lg px-2 md:px-3 py-1.5 text-xs md:text-sm">
+        <span class="text-slate-400">SALA</span> <span id="current-room-num" class="title-font text-cyan-400 font-bold ml-1 md:ml-2">1</span> <span class="text-slate-500">/7</span>
        </div>
-       <div class="bg-slate-900 border border-emerald-500/30 rounded-lg px-3 py-1.5"><span class="text-slate-400 text-xs">PREGUNTA</span> <span id="current-question-num" class="title-font text-emerald-400 font-bold ml-2">1</span> <span class="text-slate-500">/5</span>
+       <div class="bg-slate-900 border border-emerald-500/30 rounded-lg px-2 md:px-3 py-1.5 text-xs md:text-sm">
+        <span class="text-slate-400">PREGUNTA</span> <span id="current-question-num" class="title-font text-emerald-400 font-bold ml-1 md:ml-2">1</span> <span class="text-slate-500">/5</span>
        </div>
       </div>
      </div><!-- Room Info -->
-     <div id="room-header" class="bg-gradient-to-r from-slate-900 to-slate-900/50 border border-cyan-500/30 rounded-xl p-4 mb-6">
-      <div class="flex items-center gap-4">
-       <div id="room-icon-container" class="w-14 h-14 bg-cyan-500/20 rounded-xl flex items-center justify-center"><i data-lucide="atom" class="w-7 h-7 text-cyan-400"></i>
+     <div id="room-header" class="bg-gradient-to-r from-slate-900 to-slate-900/50 border border-cyan-500/30 rounded-xl p-3 md:p-4 mb-4 md:mb-6">
+      <div class="flex items-start gap-2 md:gap-4">
+       <div id="room-icon-container" class="w-10 md:w-14 h-10 md:h-14 bg-cyan-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
+        <i data-lucide="atom" class="w-5 md:w-7 h-5 md:h-7 text-cyan-400"></i>
        </div>
-       <div>
-        <h2 id="room-title" class="title-font text-xl font-bold text-white">Sala de la Célula</h2>
-        <p id="room-subtitle" class="text-slate-400 text-sm">Metabolismo y estructura celular</p>
+       <div class="flex-1 min-w-0">
+        <h2 id="room-title" class="title-font text-base md:text-xl font-bold text-white truncate">Sala de la Célula</h2>
+        <p id="room-subtitle" class="text-slate-400 text-xs md:text-sm truncate">Metabolismo y estructura celular</p>
        </div>
       </div><!-- Progress Bar -->
-      <div class="mt-4">
+      <div class="mt-3 md:mt-4">
        <div class="h-2 bg-slate-800 rounded-full overflow-hidden">
         <div id="room-progress-bar" class="progress-fill h-full bg-gradient-to-r from-cyan-500 to-emerald-500 rounded-full" style="width: 0%"></div>
        </div>
       </div>
      </div><!-- Question Card -->
-     <div id="question-card" class="bg-slate-900/80 border border-slate-700 rounded-2xl p-6 mb-6">
-      <div class="flex items-start gap-3 mb-6">
-       <div class="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center flex-shrink-0"><i data-lucide="help-circle" class="w-5 h-5 text-cyan-400"></i>
+     <div id="question-card" class="bg-slate-900/80 border border-slate-700 rounded-2xl p-4 md:p-6 mb-4 md:mb-6">
+      <div class="flex items-start gap-2 md:gap-3 mb-4 md:mb-6">
+       <div class="w-8 md:w-10 h-8 md:h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+        <i data-lucide="help-circle" class="w-4 md:w-5 h-4 md:h-5 text-cyan-400"></i>
        </div>
-       <p id="question-text" class="text-lg text-white leading-relaxed">Cargando pregunta...</p>
+       <p id="question-text" class="text-sm md:text-lg text-white leading-relaxed">Cargando pregunta...</p>
       </div>
-      <div id="options-container" class="space-y-3"><!-- Options will be inserted here -->
+      <div id="options-container" class="space-y-2 md:space-y-3">
+       <!-- Options will be inserted here -->
       </div>
      </div><!-- Feedback Panel -->
-     <div id="feedback-panel" class="hidden bg-slate-900/80 border rounded-2xl p-6 mb-6">
-      <div class="flex items-start gap-4">
-       <div id="feedback-icon" class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"><i data-lucide="check" class="w-6 h-6"></i>
+     <div id="feedback-panel" class="hidden bg-slate-900/80 border rounded-2xl p-4 md:p-6 mb-4 md:mb-6">
+      <div class="flex items-start gap-3 md:gap-4">
+       <div id="feedback-icon" class="w-10 md:w-12 h-10 md:h-12 rounded-xl flex items-center justify-center flex-shrink-0">
+        <i data-lucide="check" class="w-5 md:w-6 h-5 md:h-6"></i>
        </div>
-       <div class="flex-1">
-        <h3 id="feedback-title" class="title-font text-xl font-bold mb-2">¡Correcto!</h3>
-        <p id="feedback-text" class="text-slate-300 leading-relaxed"></p>
+       <div class="flex-1 min-w-0">
+        <h3 id="feedback-title" class="title-font text-lg md:text-xl font-bold mb-2">¡Correcto!</h3>
+        <p id="feedback-text" class="text-slate-300 leading-relaxed text-sm md:text-base"></p>
        </div>
-      </div><button id="next-btn" onclick="nextQuestion()" class="mt-6 w-full bg-gradient-to-r from-cyan-500 to-emerald-500 hover:from-cyan-400 hover:to-emerald-400 text-slate-950 font-bold py-3 px-6 rounded-xl transition-all flex items-center justify-center gap-2"> <span>Continuar</span> <i data-lucide="arrow-right" class="w-5 h-5"></i> </button>
+      </div><button id="next-btn" onclick="nextQuestion()" class="mt-4 md:mt-6 w-full bg-gradient-to-r from-cyan-500 to-emerald-500 hover:from-cyan-400 hover:to-emerald-400 text-slate-950 font-bold py-2 md:py-3 px-4 md:px-6 rounded-xl transition-all flex items-center justify-center gap-2 text-sm md:text-base"> <span>Continuar</span> <i data-lucide="arrow-right" class="w-4 md:w-5 h-4 md:h-5"></i> </button>
      </div>
     </div>
    </div><!-- Victory Screen -->
-   <div id="victory-screen" class="hidden min-h-full flex flex-col items-center justify-center p-6">
-    <div class="text-center max-w-2xl">
-     <div class="float-animation mb-8">
-      <div class="w-40 h-40 mx-auto bg-gradient-to-br from-emerald-500 to-cyan-500 rounded-3xl flex items-center justify-center glow-effect"><i data-lucide="trophy" class="w-20 h-20 text-white"></i>
+   <div id="victory-screen" class="hidden min-h-full flex flex-col items-center justify-center p-4 md:p-6">
+    <div class="text-center max-w-2xl w-full">
+     <div class="float-animation mb-6 md:mb-8">
+      <div class="w-28 md:w-40 h-28 md:h-40 mx-auto bg-gradient-to-br from-emerald-500 to-cyan-500 rounded-3xl flex items-center justify-center glow-effect">
+       <i data-lucide="trophy" class="w-14 md:w-20 h-14 md:h-20 text-white"></i>
       </div>
      </div>
-     <h1 class="title-font text-4xl md:text-5xl font-black mb-6 bg-gradient-to-r from-emerald-400 via-cyan-400 to-emerald-400 bg-clip-text text-transparent">¡ESCAPE EXITOSO!</h1>
-     <div class="bg-slate-900/80 border border-emerald-500/30 rounded-xl p-6 mb-8">
-      <p class="text-slate-300 text-lg leading-relaxed mb-4">¡Has logrado escapar del laboratorio y dominar los conceptos de Ciencias Naturales!</p>
-      <p class="text-emerald-400 font-semibold">Has demostrado conocimientos en: Células, Sistemas del cuerpo, Nutrición, Ecosistemas, Mezclas, Física y Energía.</p>
+     <h1 class="title-font text-2xl md:text-4xl lg:text-5xl font-black mb-4 md:mb-6 bg-gradient-to-r from-emerald-400 via-cyan-400 to-emerald-400 bg-clip-text text-transparent">¡ESCAPE EXITOSO!</h1>
+     <div class="bg-slate-900/80 border border-emerald-500/30 rounded-xl p-4 md:p-6 mb-6 md:mb-8 mx-2 md:mx-0">
+      <p class="text-slate-300 text-sm md:text-lg leading-relaxed mb-4">¡Has logrado escapar del laboratorio y dominar los conceptos de Ciencias Naturales!</p>
+      <p class="text-emerald-400 font-semibold text-xs md:text-base">Has demostrado conocimientos en: Células, Sistemas del cuerpo, Nutrición, Ecosistemas, Mezclas, Física y Energía.</p>
      </div>
-     <div class="flex flex-col sm:flex-row gap-4 justify-center"><button onclick="resetGame()" class="title-font bg-gradient-to-r from-cyan-500 to-emerald-500 hover:from-cyan-400 hover:to-emerald-400 text-slate-950 font-bold py-4 px-8 rounded-xl transition-all transform hover:scale-105 flex items-center justify-center gap-2"> <i data-lucide="rotate-ccw" class="w-5 h-5"></i> Jugar de nuevo </button> <button onclick="showRoomSelection()" class="title-font bg-slate-800 hover:bg-slate-700 border border-cyan-500/30 text-cyan-400 font-bold py-4 px-8 rounded-xl transition-all flex items-center justify-center gap-2"> <i data-lucide="map" class="w-5 h-5"></i> Ver progreso </button>
+     <div class="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center w-full px-2 md:px-0">
+      <button onclick="resetGame()" class="title-font bg-gradient-to-r from-cyan-500 to-emerald-500 hover:from-cyan-400 hover:to-emerald-400 text-slate-950 font-bold py-3 md:py-4 px-6 md:px-8 rounded-xl transition-all transform hover:scale-105 flex items-center justify-center gap-2 text-sm md:text-base"> <i data-lucide="rotate-ccw" class="w-4 md:w-5 h-4 md:h-5"></i> Jugar de nuevo </button> <button onclick="showRoomSelection()" class="title-font bg-slate-800 hover:bg-slate-700 border border-cyan-500/30 text-cyan-400 font-bold py-3 md:py-4 px-6 md:px-8 rounded-xl transition-all flex items-center justify-center gap-2 text-sm md:text-base"> <i data-lucide="map" class="w-4 md:w-5 h-4 md:h-5"></i> Ver progreso </button>
      </div>
     </div>
    </div>
@@ -748,7 +778,7 @@
         const progress = gameState.roomProgress[index];
         
         const card = document.createElement('div');
-        card.className = `room-card bg-slate-900/80 border ${isCompleted ? 'border-emerald-500/50' : isLocked ? 'border-slate-700/50 opacity-60' : 'border-cyan-500/30'} rounded-xl p-5 cursor-pointer ${isLocked ? 'locked' : ''}`;
+        card.className = `room-card bg-slate-900/80 border ${isCompleted ? 'border-emerald-500/50' : isLocked ? 'border-slate-700/50 opacity-60' : 'border-cyan-500/30'} rounded-xl p-4 md:p-5 cursor-pointer ${isLocked ? 'locked' : ''}`;
         
         if (!isLocked) {
           card.onclick = () => {
@@ -761,14 +791,14 @@
         }
         
         card.innerHTML = `
-          <div class="flex items-start justify-between mb-4">
-            <div class="w-12 h-12 ${isCompleted ? 'bg-emerald-500/20' : 'bg-cyan-500/20'} rounded-xl flex items-center justify-center">
-              <i data-lucide="${icons[index]}" class="w-6 h-6 ${isCompleted ? 'text-emerald-400' : 'text-cyan-400'}"></i>
+          <div class="flex items-start justify-between mb-3 md:mb-4">
+            <div class="w-10 md:w-12 h-10 md:h-12 ${isCompleted ? 'bg-emerald-500/20' : 'bg-cyan-500/20'} rounded-xl flex items-center justify-center">
+              <i data-lucide="${icons[index]}" class="w-5 md:w-6 h-5 md:h-6 ${isCompleted ? 'text-emerald-400' : 'text-cyan-400'}"></i>
             </div>
-            ${isLocked ? '<i data-lucide="lock" class="w-5 h-5 text-slate-500"></i>' : isCompleted ? '<i data-lucide="check-circle" class="w-5 h-5 text-emerald-400"></i>' : ''}
+            ${isLocked ? '<i data-lucide="lock" class="w-4 md:w-5 h-4 md:h-5 text-slate-500"></i>' : isCompleted ? '<i data-lucide="check-circle" class="w-4 md:w-5 h-4 md:h-5 text-emerald-400"></i>' : ''}
           </div>
-          <h3 class="title-font font-bold text-white mb-1">Sala ${index + 1}</h3>
-          <p class="text-sm text-slate-400 mb-3">${room.title}</p>
+          <h3 class="title-font font-bold text-white mb-1 text-sm md:text-base">Sala ${index + 1}</h3>
+          <p class="text-xs md:text-sm text-slate-400 mb-2 md:mb-3 line-clamp-2">${room.title}</p>
           <div class="h-1.5 bg-slate-800 rounded-full overflow-hidden">
             <div class="h-full ${isCompleted ? 'bg-emerald-500' : 'bg-cyan-500'} rounded-full transition-all" style="width: ${progress}%"></div>
           </div>
@@ -1127,5 +1157,5 @@
       resetGame();
     }
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e3f364b938cb52c',t:'MTc3NDc5MDg0Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e3fb5863525f03f',t:'MTc3NDc5NjA1OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
