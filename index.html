@@ -134,8 +134,7 @@
     </div>
     <div class="text-center max-w-2xl w-full">
      <div class="float-animation mb-6 md:mb-8">
-      <div class="w-24 md:w-32 h-24 md:h-32 mx-auto bg-gradient-to-br from-cyan-500 to-emerald-500 rounded-2xl flex items-center justify-center glow-effect">
-       <i data-lucide="flask-conical" class="w-12 md:w-16 h-12 md:h-16 text-white"></i>
+      <div class="w-24 md:w-32 h-24 md:h-32 mx-auto bg-gradient-to-br from-cyan-500 to-emerald-500 rounded-2xl flex items-center justify-center glow-effect"><i data-lucide="flask-conical" class="w-12 md:w-16 h-12 md:h-16 text-white"></i>
       </div>
      </div>
      <h1 id="main-title" class="title-font text-2xl md:text-4xl lg:text-6xl font-black mb-3 md:mb-4 bg-gradient-to-r from-cyan-400 via-emerald-400 to-cyan-400 bg-clip-text text-transparent">ESCAPE DEL LABORATORIO</h1>
@@ -154,33 +153,30 @@
     <div class="max-w-6xl mx-auto">
      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 md:mb-8 gap-4">
       <h2 class="title-font text-xl md:text-2xl lg:text-3xl font-bold text-cyan-400">MAPA DEL LABORATORIO</h2>
-      <div class="flex items-center gap-4 bg-slate-900 border border-cyan-500/30 rounded-lg px-3 md:px-4 py-2 w-full sm:w-auto"><span class="text-slate-400 text-xs md:text-sm">Progreso:</span> <span id="overall-progress" class="title-font text-cyan-400 font-bold ml-2">0%</span>
+      <div class="flex items-center gap-4 bg-slate-900 border border-cyan-500/30 rounded-lg px-3 md:px-4 py-2 w-full sm:w-auto">
+       <span class="text-slate-400 text-xs md:text-sm">Progreso:</span> <span id="overall-progress" class="title-font text-cyan-400 font-bold ml-2">0%</span>
       </div>
      </div>
-     <div id="rooms-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4">
-      <!-- Rooms will be inserted here -->
+     <div id="rooms-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-4"><!-- Rooms will be inserted here -->
      </div>
     </div>
    </div><!-- Game Screen -->
    <div id="game-screen" class="hidden min-h-full p-3 md:p-4 lg:p-6">
-    <div class="max-w-4xl mx-auto">
-     <!-- Header -->
+    <div class="max-w-4xl mx-auto"><!-- Header -->
      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 md:mb-6 gap-3">
-      <div class="flex flex-wrap items-center gap-2 md:gap-3"><button onclick="showRoomSelection()" class="flex items-center gap-2 text-slate-400 hover:text-cyan-400 transition-colors text-sm md:text-base"> <i data-lucide="map" class="w-4 md:w-5 h-4 md:h-5"></i> <span>Mapa</span> </button> <button onclick="showMenuModal()" class="flex items-center gap-2 text-slate-400 hover:text-cyan-400 transition-colors text-sm md:text-base"> <i data-lucide="home" class="w-4 md:w-5 h-4 md:h-5"></i> <span>Menú</span> </button>
+      <div class="flex flex-wrap items-center gap-2 md:gap-3">
+       <button onclick="showRoomSelection()" class="flex items-center gap-2 text-slate-400 hover:text-cyan-400 transition-colors text-sm md:text-base"> <i data-lucide="map" class="w-4 md:w-5 h-4 md:h-5"></i> <span>Mapa</span> </button> <button onclick="showMenuModal()" class="flex items-center gap-2 text-slate-400 hover:text-cyan-400 transition-colors text-sm md:text-base"> <i data-lucide="home" class="w-4 md:w-5 h-4 md:h-5"></i> <span>Menú</span> </button>
       </div>
       <div class="flex flex-wrap items-center gap-2 md:gap-4 w-full sm:w-auto">
-       <div class="bg-slate-900 border border-cyan-500/30 rounded-lg px-2 md:px-3 py-1.5 text-xs md:text-sm">
-        <span class="text-slate-400">SALA</span> <span id="current-room-num" class="title-font text-cyan-400 font-bold ml-1 md:ml-2">1</span> <span class="text-slate-500">/7</span>
+       <div class="bg-slate-900 border border-cyan-500/30 rounded-lg px-2 md:px-3 py-1.5 text-xs md:text-sm"><span class="text-slate-400">SALA</span> <span id="current-room-num" class="title-font text-cyan-400 font-bold ml-1 md:ml-2">1</span> <span class="text-slate-500">/7</span>
        </div>
-       <div class="bg-slate-900 border border-emerald-500/30 rounded-lg px-2 md:px-3 py-1.5 text-xs md:text-sm">
-        <span class="text-slate-400">PREGUNTA</span> <span id="current-question-num" class="title-font text-emerald-400 font-bold ml-1 md:ml-2">1</span> <span class="text-slate-500">/5</span>
+       <div class="bg-slate-900 border border-emerald-500/30 rounded-lg px-2 md:px-3 py-1.5 text-xs md:text-sm"><span class="text-slate-400">PREGUNTA</span> <span id="current-question-num" class="title-font text-emerald-400 font-bold ml-1 md:ml-2">1</span> <span class="text-slate-500">/5</span>
        </div>
       </div>
      </div><!-- Room Info -->
      <div id="room-header" class="bg-gradient-to-r from-slate-900 to-slate-900/50 border border-cyan-500/30 rounded-xl p-3 md:p-4 mb-4 md:mb-6">
       <div class="flex items-start gap-2 md:gap-4">
-       <div id="room-icon-container" class="w-10 md:w-14 h-10 md:h-14 bg-cyan-500/20 rounded-xl flex items-center justify-center flex-shrink-0">
-        <i data-lucide="atom" class="w-5 md:w-7 h-5 md:h-7 text-cyan-400"></i>
+       <div id="room-icon-container" class="w-10 md:w-14 h-10 md:h-14 bg-cyan-500/20 rounded-xl flex items-center justify-center flex-shrink-0"><i data-lucide="atom" class="w-5 md:w-7 h-5 md:h-7 text-cyan-400"></i>
        </div>
        <div class="flex-1 min-w-0">
         <h2 id="room-title" class="title-font text-base md:text-xl font-bold text-white truncate">Sala de la Célula</h2>
@@ -195,19 +191,16 @@
      </div><!-- Question Card -->
      <div id="question-card" class="bg-slate-900/80 border border-slate-700 rounded-2xl p-4 md:p-6 mb-4 md:mb-6">
       <div class="flex items-start gap-2 md:gap-3 mb-4 md:mb-6">
-       <div class="w-8 md:w-10 h-8 md:h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
-        <i data-lucide="help-circle" class="w-4 md:w-5 h-4 md:h-5 text-cyan-400"></i>
+       <div class="w-8 md:w-10 h-8 md:h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center flex-shrink-0"><i data-lucide="help-circle" class="w-4 md:w-5 h-4 md:h-5 text-cyan-400"></i>
        </div>
        <p id="question-text" class="text-sm md:text-lg text-white leading-relaxed">Cargando pregunta...</p>
       </div>
-      <div id="options-container" class="space-y-2 md:space-y-3">
-       <!-- Options will be inserted here -->
+      <div id="options-container" class="space-y-2 md:space-y-3"><!-- Options will be inserted here -->
       </div>
      </div><!-- Feedback Panel -->
      <div id="feedback-panel" class="hidden bg-slate-900/80 border rounded-2xl p-4 md:p-6 mb-4 md:mb-6">
       <div class="flex items-start gap-3 md:gap-4">
-       <div id="feedback-icon" class="w-10 md:w-12 h-10 md:h-12 rounded-xl flex items-center justify-center flex-shrink-0">
-        <i data-lucide="check" class="w-5 md:w-6 h-5 md:h-6"></i>
+       <div id="feedback-icon" class="w-10 md:w-12 h-10 md:h-12 rounded-xl flex items-center justify-center flex-shrink-0"><i data-lucide="check" class="w-5 md:w-6 h-5 md:h-6"></i>
        </div>
        <div class="flex-1 min-w-0">
         <h3 id="feedback-title" class="title-font text-lg md:text-xl font-bold mb-2">¡Correcto!</h3>
@@ -220,8 +213,7 @@
    <div id="victory-screen" class="hidden min-h-full flex flex-col items-center justify-center p-4 md:p-6">
     <div class="text-center max-w-2xl w-full">
      <div class="float-animation mb-6 md:mb-8">
-      <div class="w-28 md:w-40 h-28 md:h-40 mx-auto bg-gradient-to-br from-emerald-500 to-cyan-500 rounded-3xl flex items-center justify-center glow-effect">
-       <i data-lucide="trophy" class="w-14 md:w-20 h-14 md:h-20 text-white"></i>
+      <div class="w-28 md:w-40 h-28 md:h-40 mx-auto bg-gradient-to-br from-emerald-500 to-cyan-500 rounded-3xl flex items-center justify-center glow-effect"><i data-lucide="trophy" class="w-14 md:w-20 h-14 md:h-20 text-white"></i>
       </div>
      </div>
      <h1 class="title-font text-2xl md:text-4xl lg:text-5xl font-black mb-4 md:mb-6 bg-gradient-to-r from-emerald-400 via-cyan-400 to-emerald-400 bg-clip-text text-transparent">¡ESCAPE EXITOSO!</h1>
@@ -229,8 +221,7 @@
       <p class="text-slate-300 text-sm md:text-lg leading-relaxed mb-4">¡Has logrado escapar del laboratorio y dominar los conceptos de Ciencias Naturales!</p>
       <p class="text-emerald-400 font-semibold text-xs md:text-base">Has demostrado conocimientos en: Células, Sistemas del cuerpo, Nutrición, Ecosistemas, Mezclas, Física y Energía.</p>
      </div>
-     <div class="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center w-full px-2 md:px-0">
-      <button onclick="resetGame()" class="title-font bg-gradient-to-r from-cyan-500 to-emerald-500 hover:from-cyan-400 hover:to-emerald-400 text-slate-950 font-bold py-3 md:py-4 px-6 md:px-8 rounded-xl transition-all transform hover:scale-105 flex items-center justify-center gap-2 text-sm md:text-base"> <i data-lucide="rotate-ccw" class="w-4 md:w-5 h-4 md:h-5"></i> Jugar de nuevo </button> <button onclick="showRoomSelection()" class="title-font bg-slate-800 hover:bg-slate-700 border border-cyan-500/30 text-cyan-400 font-bold py-3 md:py-4 px-6 md:px-8 rounded-xl transition-all flex items-center justify-center gap-2 text-sm md:text-base"> <i data-lucide="map" class="w-4 md:w-5 h-4 md:h-5"></i> Ver progreso </button>
+     <div class="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center w-full px-2 md:px-0"><button onclick="resetGame()" class="title-font bg-gradient-to-r from-cyan-500 to-emerald-500 hover:from-cyan-400 hover:to-emerald-400 text-slate-950 font-bold py-3 md:py-4 px-6 md:px-8 rounded-xl transition-all transform hover:scale-105 flex items-center justify-center gap-2 text-sm md:text-base"> <i data-lucide="rotate-ccw" class="w-4 md:w-5 h-4 md:h-5"></i> Jugar de nuevo </button> <button onclick="showRoomSelection()" class="title-font bg-slate-800 hover:bg-slate-700 border border-cyan-500/30 text-cyan-400 font-bold py-3 md:py-4 px-6 md:px-8 rounded-xl transition-all flex items-center justify-center gap-2 text-sm md:text-base"> <i data-lucide="map" class="w-4 md:w-5 h-4 md:h-5"></i> Ver progreso </button>
      </div>
     </div>
    </div>
@@ -692,6 +683,41 @@
       }
     ];
     
+    // LocalStorage functions
+    const STORAGE_KEY = 'escapeRoomGameState';
+    
+    function saveGameState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(gameState));
+      } catch (e) {
+        console.error('Error saving game state:', e);
+      }
+    }
+    
+    function loadGameState() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          // Only load if it has valid data
+          if (parsed.roomCompleted && parsed.answeredQuestions) {
+            return parsed;
+          }
+        }
+      } catch (e) {
+        console.error('Error loading game state:', e);
+      }
+      return null;
+    }
+    
+    function clearGameState() {
+      try {
+        localStorage.removeItem(STORAGE_KEY);
+      } catch (e) {
+        console.error('Error clearing game state:', e);
+      }
+    }
+    
     // Game state
     let gameState = {
       currentRoom: 0,
@@ -701,6 +727,14 @@
       answeredQuestions: Array(7).fill(null).map(() => []),
       originalQuestions: []
     };
+    
+    // Load saved game state on initialization
+    function initializeGameState() {
+      const savedState = loadGameState();
+      if (savedState) {
+        gameState = savedState;
+      }
+    }
     
     // Initialize SDK
     if (window.elementSdk) {
@@ -749,6 +783,9 @@
     
     // Initialize Lucide icons
     lucide.createIcons();
+    
+    // Initialize game on page load
+    initializeGameState();
     
     // Game functions
     function startGame() {
@@ -815,6 +852,7 @@
       const total = gameState.roomProgress.reduce((a, b) => a + b, 0);
       const percentage = Math.round(total / 7);
       document.getElementById('overall-progress').textContent = `${percentage}%`;
+      saveGameState();
     }
     
     function enterRoom(roomIndex, isRetry = false) {
@@ -1016,10 +1054,14 @@
       // Update progress
       gameState.roomProgress[gameState.currentRoom] = (gameState.currentQuestion / room.questions.length) * 100;
       
+      saveGameState();
+      
       if (gameState.currentQuestion >= room.questions.length) {
         // Room completed
         gameState.roomCompleted[gameState.currentRoom] = true;
         gameState.currentQuestion = 0;
+        
+        saveGameState();
         
         // Check if all rooms completed
         if (gameState.roomCompleted.every(c => c)) {
@@ -1056,6 +1098,8 @@
           }
         });
       }
+      
+      saveGameState();
       
       document.getElementById('victory-screen').classList.add('hidden');
       document.getElementById('start-screen').classList.remove('hidden');
@@ -1096,6 +1140,11 @@
             <button onclick="confirmRestart()" class="w-full bg-red-500/20 hover:bg-red-500/30 border border-red-500/50 text-red-400 font-semibold py-3 px-4 rounded-xl transition-all flex items-center justify-center gap-2">
               <i data-lucide="rotate-ccw" class="w-5 h-5"></i>
               Reiniciar juego
+            </button>
+            
+            <button onclick="clearAllProgress()" class="w-full bg-red-600/20 hover:bg-red-600/30 border border-red-600/50 text-red-500 font-semibold py-3 px-4 rounded-xl transition-all flex items-center justify-center gap-2 text-sm">
+              <i data-lucide="trash" class="w-5 h-5"></i>
+              Borrar todo progreso
             </button>
           </div>
         </div>
@@ -1156,6 +1205,67 @@
       closeConfirmModal();
       resetGame();
     }
+    
+    function clearAllProgress() {
+      const confirmModal = document.createElement('div');
+      confirmModal.className = 'fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4';
+      confirmModal.id = 'clear-progress-modal';
+      
+      confirmModal.innerHTML = `
+        <div class="bg-slate-900 border border-red-600/50 rounded-2xl p-8 max-w-md w-full">
+          <h3 class="title-font text-2xl font-bold text-white mb-4">¿Borrar todo progreso?</h3>
+          <p class="text-slate-300 mb-6">Esta acción no se puede deshacer. Se eliminarán todos los datos guardados y deberás comenzar desde el principio.</p>
+          
+          <div class="space-y-3">
+            <button onclick="confirmClearProgress()" class="w-full bg-red-600/30 hover:bg-red-600/40 border border-red-600/50 text-red-400 font-semibold py-3 px-4 rounded-xl transition-all flex items-center justify-center gap-2">
+              <i data-lucide="trash-2" class="w-5 h-5"></i>
+              Sí, borrar todo
+            </button>
+            
+            <button onclick="closeClearProgressModal()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold py-3 px-4 rounded-xl transition-all flex items-center justify-center gap-2">
+              <i data-lucide="x" class="w-5 h-5"></i>
+              Cancelar
+            </button>
+          </div>
+        </div>
+      `;
+      
+      document.getElementById('app').appendChild(confirmModal);
+      lucide.createIcons();
+    }
+    
+    function closeClearProgressModal() {
+      const modal = document.getElementById('clear-progress-modal');
+      if (modal) modal.remove();
+    }
+    
+    function confirmClearProgress() {
+      closeClearProgressModal();
+      clearGameState();
+      gameState = {
+        currentRoom: 0,
+        currentQuestion: 0,
+        roomProgress: [0, 0, 0, 0, 0, 0, 0],
+        roomCompleted: [false, false, false, false, false, false, false],
+        answeredQuestions: Array(7).fill(null).map(() => []),
+        originalQuestions: []
+      };
+      
+      // Restore original questions
+      if (gameState.originalQuestions) {
+        rooms.forEach((room, index) => {
+          if (gameState.originalQuestions[index]) {
+            rooms[index].questions = JSON.parse(JSON.stringify(gameState.originalQuestions[index]));
+          }
+        });
+      }
+      
+      document.getElementById('game-screen').classList.add('hidden');
+      document.getElementById('room-selection').classList.add('hidden');
+      document.getElementById('victory-screen').classList.add('hidden');
+      document.getElementById('start-screen').classList.remove('hidden');
+      closeMenuModal();
+    }
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e3fb5863525f03f',t:'MTc3NDc5NjA1OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e3fdab2b768f03f',t:'MTc3NDc5NzU4MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
