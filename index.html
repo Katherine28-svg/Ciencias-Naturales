@@ -1,0 +1,1131 @@
+<!doctype html>
+<html lang="es" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Escape Room Científico</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; }
+    .title-font { font-family: 'Orbitron', monospace; }
+    
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 20px rgba(34, 211, 238, 0.3); }
+      50% { box-shadow: 0 0 40px rgba(34, 211, 238, 0.6); }
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+    
+    @keyframes scan-line {
+      0% { transform: translateY(-100%); }
+      100% { transform: translateY(100%); }
+    }
+    
+    .glow-effect { animation: pulse-glow 2s ease-in-out infinite; }
+    .float-animation { animation: float 3s ease-in-out infinite; }
+    
+    .scan-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(transparent 50%, rgba(34, 211, 238, 0.03) 50%);
+      background-size: 100% 4px;
+      pointer-events: none;
+    }
+    
+    .option-btn {
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .option-btn:hover {
+      transform: translateX(10px);
+      background: linear-gradient(90deg, rgba(34, 211, 238, 0.2), transparent);
+    }
+    
+    .option-btn::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 4px;
+      height: 100%;
+      background: #22d3ee;
+      transform: scaleY(0);
+      transition: transform 0.3s ease;
+    }
+    
+    .option-btn:hover::before {
+      transform: scaleY(1);
+    }
+    
+    .correct-answer {
+      background: linear-gradient(90deg, rgba(34, 197, 94, 0.3), transparent) !important;
+      border-color: #22c55e !important;
+    }
+    
+    .wrong-answer {
+      background: linear-gradient(90deg, rgba(239, 68, 68, 0.3), transparent) !important;
+      border-color: #ef4444 !important;
+    }
+    
+    .progress-fill {
+      transition: width 0.5s ease;
+    }
+    
+    .room-card {
+      transition: all 0.3s ease;
+    }
+    
+    .room-card:hover:not(.locked) {
+      transform: scale(1.02);
+    }
+    
+    .dna-helix {
+      position: absolute;
+      opacity: 0.1;
+      font-size: 120px;
+    }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="min-h-screen bg-slate-950 text-white overflow-x-hidden">
+  <div id="app" class="min-h-full relative">
+   <div class="scan-overlay"></div><!-- Start Screen -->
+   <div id="start-screen" class="min-h-full flex flex-col items-center justify-center p-6 relative">
+    <div class="dna-helix top-10 left-10">
+     🧬
+    </div>
+    <div class="dna-helix bottom-20 right-10">
+     ⚗️
+    </div>
+    <div class="text-center max-w-2xl">
+     <div class="float-animation mb-8">
+      <div class="w-32 h-32 mx-auto bg-gradient-to-br from-cyan-500 to-emerald-500 rounded-2xl flex items-center justify-center glow-effect"><i data-lucide="flask-conical" class="w-16 h-16 text-white"></i>
+      </div>
+     </div>
+     <h1 id="main-title" class="title-font text-4xl md:text-6xl font-black mb-4 bg-gradient-to-r from-cyan-400 via-emerald-400 to-cyan-400 bg-clip-text text-transparent">ESCAPE DEL LABORATORIO</h1>
+     <p id="welcome-text" class="text-slate-400 text-lg mb-8 leading-relaxed">Has quedado atrapado en un laboratorio científico avanzado. Para escapar, deberás demostrar tus conocimientos en Ciencias Naturales atravesando 7 salas de desafíos.</p>
+     <div class="bg-slate-900/80 border border-cyan-500/30 rounded-xl p-6 mb-8">
+      <h3 class="title-font text-cyan-400 font-bold mb-4 flex items-center justify-center gap-2"><i data-lucide="alert-triangle" class="w-5 h-5"></i> PROTOCOLO DE SEGURIDAD</h3>
+      <ul class="text-slate-300 text-sm space-y-2 text-left">
+       <li class="flex items-start gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0"></i> Cada sala contiene 5 desafíos científicos</li>
+       <li class="flex items-start gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0"></i> Responde correctamente para desbloquear la siguiente puerta</li>
+       <li class="flex items-start gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0"></i> Si te equivocas, recibirás una explicación antes de continuar</li>
+      </ul>
+     </div><button onclick="startGame()" class="title-font bg-gradient-to-r from-cyan-500 to-emerald-500 hover:from-cyan-400 hover:to-emerald-400 text-slate-950 font-bold py-4 px-12 rounded-xl text-xl transition-all transform hover:scale-105 glow-effect"> <span class="flex items-center gap-3"> <i data-lucide="play" class="w-6 h-6"></i> INICIAR ESCAPE </span> </button>
+    </div>
+   </div><!-- Room Selection -->
+   <div id="room-selection" class="hidden min-h-full p-6">
+    <div class="max-w-6xl mx-auto">
+     <div class="flex items-center justify-between mb-8">
+      <h2 class="title-font text-2xl md:text-3xl font-bold text-cyan-400">MAPA DEL LABORATORIO</h2>
+      <div class="flex items-center gap-4">
+       <div class="bg-slate-900 border border-cyan-500/30 rounded-lg px-4 py-2"><span class="text-slate-400 text-sm">Progreso:</span> <span id="overall-progress" class="title-font text-cyan-400 font-bold ml-2">0%</span>
+       </div>
+      </div>
+     </div>
+     <div id="rooms-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"><!-- Rooms will be inserted here -->
+     </div>
+    </div>
+   </div><!-- Game Screen -->
+   <div id="game-screen" class="hidden min-h-full p-4 md:p-6">
+    <div class="max-w-4xl mx-auto"><!-- Header -->
+     <div class="flex items-center justify-between mb-6">
+      <div class="flex items-center gap-3">
+       <button onclick="showRoomSelection()" class="flex items-center gap-2 text-slate-400 hover:text-cyan-400 transition-colors"> <i data-lucide="map" class="w-5 h-5"></i> <span>Mapa</span> </button> <button onclick="showMenuModal()" class="flex items-center gap-2 text-slate-400 hover:text-cyan-400 transition-colors"> <i data-lucide="home" class="w-5 h-5"></i> <span>Menú</span> </button>
+      </div>
+      <div class="flex items-center gap-4">
+       <div class="bg-slate-900 border border-cyan-500/30 rounded-lg px-3 py-1.5"><span class="text-slate-400 text-xs">SALA</span> <span id="current-room-num" class="title-font text-cyan-400 font-bold ml-2">1</span> <span class="text-slate-500">/7</span>
+       </div>
+       <div class="bg-slate-900 border border-emerald-500/30 rounded-lg px-3 py-1.5"><span class="text-slate-400 text-xs">PREGUNTA</span> <span id="current-question-num" class="title-font text-emerald-400 font-bold ml-2">1</span> <span class="text-slate-500">/5</span>
+       </div>
+      </div>
+     </div><!-- Room Info -->
+     <div id="room-header" class="bg-gradient-to-r from-slate-900 to-slate-900/50 border border-cyan-500/30 rounded-xl p-4 mb-6">
+      <div class="flex items-center gap-4">
+       <div id="room-icon-container" class="w-14 h-14 bg-cyan-500/20 rounded-xl flex items-center justify-center"><i data-lucide="atom" class="w-7 h-7 text-cyan-400"></i>
+       </div>
+       <div>
+        <h2 id="room-title" class="title-font text-xl font-bold text-white">Sala de la Célula</h2>
+        <p id="room-subtitle" class="text-slate-400 text-sm">Metabolismo y estructura celular</p>
+       </div>
+      </div><!-- Progress Bar -->
+      <div class="mt-4">
+       <div class="h-2 bg-slate-800 rounded-full overflow-hidden">
+        <div id="room-progress-bar" class="progress-fill h-full bg-gradient-to-r from-cyan-500 to-emerald-500 rounded-full" style="width: 0%"></div>
+       </div>
+      </div>
+     </div><!-- Question Card -->
+     <div id="question-card" class="bg-slate-900/80 border border-slate-700 rounded-2xl p-6 mb-6">
+      <div class="flex items-start gap-3 mb-6">
+       <div class="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center flex-shrink-0"><i data-lucide="help-circle" class="w-5 h-5 text-cyan-400"></i>
+       </div>
+       <p id="question-text" class="text-lg text-white leading-relaxed">Cargando pregunta...</p>
+      </div>
+      <div id="options-container" class="space-y-3"><!-- Options will be inserted here -->
+      </div>
+     </div><!-- Feedback Panel -->
+     <div id="feedback-panel" class="hidden bg-slate-900/80 border rounded-2xl p-6 mb-6">
+      <div class="flex items-start gap-4">
+       <div id="feedback-icon" class="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"><i data-lucide="check" class="w-6 h-6"></i>
+       </div>
+       <div class="flex-1">
+        <h3 id="feedback-title" class="title-font text-xl font-bold mb-2">¡Correcto!</h3>
+        <p id="feedback-text" class="text-slate-300 leading-relaxed"></p>
+       </div>
+      </div><button id="next-btn" onclick="nextQuestion()" class="mt-6 w-full bg-gradient-to-r from-cyan-500 to-emerald-500 hover:from-cyan-400 hover:to-emerald-400 text-slate-950 font-bold py-3 px-6 rounded-xl transition-all flex items-center justify-center gap-2"> <span>Continuar</span> <i data-lucide="arrow-right" class="w-5 h-5"></i> </button>
+     </div>
+    </div>
+   </div><!-- Victory Screen -->
+   <div id="victory-screen" class="hidden min-h-full flex flex-col items-center justify-center p-6">
+    <div class="text-center max-w-2xl">
+     <div class="float-animation mb-8">
+      <div class="w-40 h-40 mx-auto bg-gradient-to-br from-emerald-500 to-cyan-500 rounded-3xl flex items-center justify-center glow-effect"><i data-lucide="trophy" class="w-20 h-20 text-white"></i>
+      </div>
+     </div>
+     <h1 class="title-font text-4xl md:text-5xl font-black mb-6 bg-gradient-to-r from-emerald-400 via-cyan-400 to-emerald-400 bg-clip-text text-transparent">¡ESCAPE EXITOSO!</h1>
+     <div class="bg-slate-900/80 border border-emerald-500/30 rounded-xl p-6 mb-8">
+      <p class="text-slate-300 text-lg leading-relaxed mb-4">¡Has logrado escapar del laboratorio y dominar los conceptos de Ciencias Naturales!</p>
+      <p class="text-emerald-400 font-semibold">Has demostrado conocimientos en: Células, Sistemas del cuerpo, Nutrición, Ecosistemas, Mezclas, Física y Energía.</p>
+     </div>
+     <div class="flex flex-col sm:flex-row gap-4 justify-center"><button onclick="resetGame()" class="title-font bg-gradient-to-r from-cyan-500 to-emerald-500 hover:from-cyan-400 hover:to-emerald-400 text-slate-950 font-bold py-4 px-8 rounded-xl transition-all transform hover:scale-105 flex items-center justify-center gap-2"> <i data-lucide="rotate-ccw" class="w-5 h-5"></i> Jugar de nuevo </button> <button onclick="showRoomSelection()" class="title-font bg-slate-800 hover:bg-slate-700 border border-cyan-500/30 text-cyan-400 font-bold py-4 px-8 rounded-xl transition-all flex items-center justify-center gap-2"> <i data-lucide="map" class="w-5 h-5"></i> Ver progreso </button>
+     </div>
+    </div>
+   </div>
+  </div>
+  <script>
+    // Default configuration
+    const defaultConfig = {
+      game_title: "ESCAPE DEL LABORATORIO",
+      welcome_message: "Has quedado atrapado en un laboratorio científico avanzado. Para escapar, deberás demostrar tus conocimientos en Ciencias Naturales atravesando 7 salas de desafíos.",
+      primary_color: "#22d3ee",
+      secondary_color: "#10b981",
+      background_color: "#020617",
+      text_color: "#ffffff",
+      accent_color: "#0f172a"
+    };
+    
+    // Game data
+    const rooms = [
+      {
+        id: 1,
+        title: "Sala de la Célula",
+        subtitle: "Metabolismo y estructura celular",
+        icon: "dna",
+        questions: [
+          {
+            text: "Las mitocondrias son consideradas las 'centrales energéticas' de la célula. ¿Qué proceso metabólico ocurre principalmente en ellas?",
+            options: [
+              { letter: "A", text: "Fotosíntesis" },
+              { letter: "B", text: "Respiración celular aeróbica" },
+              { letter: "C", text: "Fermentación láctica" },
+              { letter: "D", text: "Síntesis de proteínas" }
+            ],
+            correct: "B",
+            explanation: "La respiración celular aeróbica ocurre en las mitocondrias, donde se oxida la glucosa para producir ATP, la moneda energética de la célula. Este proceso requiere oxígeno y produce CO₂ y agua."
+          },
+          {
+            text: "Una célula animal fue observada en el laboratorio y se notó que carecía de pared celular y cloroplastos. ¿Qué conclusión puedes sacar sobre su metabolismo?",
+            options: [
+              { letter: "A", text: "Puede realizar fotosíntesis" },
+              { letter: "B", text: "Es autótrofa" },
+              { letter: "C", text: "Es heterótrofa y obtiene energía de nutrientes externos" },
+              { letter: "D", text: "No necesita energía para funcionar" }
+            ],
+            correct: "C",
+            explanation: "Sin cloroplastos, la célula no puede realizar fotosíntesis, por lo que debe obtener su energía de fuentes externas (nutrientes), clasificándola como heterótrofa."
+          },
+          {
+            text: "El retículo endoplasmático rugoso se diferencia del liso porque:",
+            options: [
+              { letter: "A", text: "Tiene ribosomas adheridos a su membrana" },
+              { letter: "B", text: "Sintetiza lípidos exclusivamente" },
+              { letter: "C", text: "No participa en la síntesis de proteínas" },
+              { letter: "D", text: "Se encuentra solo en células vegetales" }
+            ],
+            correct: "A",
+            explanation: "El retículo endoplasmático rugoso tiene ribosomas adheridos que le dan su apariencia 'rugosa'. Estos ribosomas sintetizan proteínas que serán exportadas o usadas en membranas."
+          },
+          {
+            text: "Durante la división celular, ¿qué estructura es responsable de separar los cromosomas hacia los polos opuestos de la célula?",
+            options: [
+              { letter: "A", text: "Membrana plasmática" },
+              { letter: "B", text: "Aparato de Golgi" },
+              { letter: "C", text: "Huso mitótico" },
+              { letter: "D", text: "Lisosomas" }
+            ],
+            correct: "C",
+            explanation: "El huso mitótico, formado por microtúbulos, se adhiere a los cromosomas y los separa hacia polos opuestos durante la anafase, asegurando que cada célula hija reciba una copia completa del material genético."
+          },
+          {
+            text: "DESAFÍO DE RAZONAMIENTO: Si una célula es tratada con una sustancia que bloquea la función de las mitocondrias, ¿qué efecto inmediato esperarías observar?",
+            options: [
+              { letter: "A", text: "Aumento en la producción de proteínas" },
+              { letter: "B", text: "Disminución drástica en la producción de ATP" },
+              { letter: "C", text: "Mayor síntesis de ADN" },
+              { letter: "D", text: "Incremento en la fotosíntesis" }
+            ],
+            correct: "B",
+            explanation: "Las mitocondrias son responsables de la mayor parte de la producción de ATP en células aeróbicas. Al bloquearse su función, la célula perdería su principal fuente de energía, afectando todos los procesos celulares que requieren ATP."
+          }
+        ]
+      },
+      {
+        id: 2,
+        title: "Sala de Sistemas",
+        subtitle: "Digestivo, respiratorio, circulatorio y excretor",
+        icon: "heart-pulse",
+        questions: [
+          {
+            text: "En el sistema digestivo, ¿dónde ocurre principalmente la absorción de nutrientes hacia la sangre?",
+            options: [
+              { letter: "A", text: "Estómago" },
+              { letter: "B", text: "Intestino delgado" },
+              { letter: "C", text: "Intestino grueso" },
+              { letter: "D", text: "Esófago" }
+            ],
+            correct: "B",
+            explanation: "El intestino delgado tiene vellosidades intestinales que aumentan la superficie de absorción. Aquí se absorben aminoácidos, glucosa, ácidos grasos, vitaminas y minerales hacia el torrente sanguíneo."
+          },
+          {
+            text: "¿Cuál es la función principal de los alvéolos pulmonares?",
+            options: [
+              { letter: "A", text: "Calentar el aire inspirado" },
+              { letter: "B", text: "Filtrar partículas del aire" },
+              { letter: "C", text: "Realizar el intercambio gaseoso con la sangre" },
+              { letter: "D", text: "Producir mucosidad protectora" }
+            ],
+            correct: "C",
+            explanation: "Los alvéolos son pequeñas estructuras en forma de saco donde el oxígeno pasa a la sangre y el CO₂ sale de ella. Sus paredes delgadas y su gran cantidad maximizan el intercambio gaseoso."
+          },
+          {
+            text: "La sangre que llega al corazón por las venas pulmonares es:",
+            options: [
+              { letter: "A", text: "Rica en CO₂ y pobre en O₂" },
+              { letter: "B", text: "Rica en O₂ y pobre en CO₂" },
+              { letter: "C", text: "Sin gases disueltos" },
+              { letter: "D", text: "Solo transporta nutrientes" }
+            ],
+            correct: "B",
+            explanation: "Las venas pulmonares son únicas porque transportan sangre oxigenada (desde los pulmones al corazón). Esto es opuesto a las demás venas del cuerpo que llevan sangre desoxigenada."
+          },
+          {
+            text: "Los riñones cumplen una función excretora fundamental. ¿Qué desecho metabólico eliminan principalmente?",
+            options: [
+              { letter: "A", text: "Glucosa" },
+              { letter: "B", text: "Oxígeno" },
+              { letter: "C", text: "Urea" },
+              { letter: "D", text: "Vitaminas" }
+            ],
+            correct: "C",
+            explanation: "La urea es el principal desecho nitrogenado producido por el metabolismo de proteínas en el hígado. Los riñones la filtran de la sangre y la eliminan en la orina."
+          },
+          {
+            text: "DESAFÍO DE ANÁLISIS: Una persona tiene una obstrucción parcial en una arteria coronaria. ¿Qué órgano se verá directamente afectado y por qué?",
+            options: [
+              { letter: "A", text: "Los pulmones, porque no recibirán sangre" },
+              { letter: "B", text: "El propio corazón, porque las coronarias lo irrigan" },
+              { letter: "C", text: "El cerebro, porque las coronarias van hacia él" },
+              { letter: "D", text: "Los riñones, porque filtran esa sangre" }
+            ],
+            correct: "B",
+            explanation: "Las arterias coronarias irrigan el músculo cardíaco (miocardio). Una obstrucción reduce el flujo de sangre al corazón, pudiendo causar angina o infarto. El corazón necesita oxígeno constante para bombear."
+          }
+        ]
+      },
+      {
+        id: 3,
+        title: "Sala de Nutrición",
+        subtitle: "Alimentación y dieta equilibrada",
+        icon: "apple",
+        questions: [
+          {
+            text: "Los carbohidratos complejos, como el almidón, deben ser digeridos antes de absorberse. ¿En qué molécula simple se transforman?",
+            options: [
+              { letter: "A", text: "Aminoácidos" },
+              { letter: "B", text: "Ácidos grasos" },
+              { letter: "C", text: "Glucosa" },
+              { letter: "D", text: "Glicerol" }
+            ],
+            correct: "C",
+            explanation: "El almidón es un polisacárido que se descompone en glucosa durante la digestión. La glucosa es el principal combustible celular y puede ser absorbida directamente por el intestino."
+          },
+          {
+            text: "Una dieta deficiente en hierro puede causar:",
+            options: [
+              { letter: "A", text: "Osteoporosis" },
+              { letter: "B", text: "Anemia" },
+              { letter: "C", text: "Escorbuto" },
+              { letter: "D", text: "Bocio" }
+            ],
+            correct: "B",
+            explanation: "El hierro es esencial para la hemoglobina, la proteína que transporta oxígeno en los glóbulos rojos. Su deficiencia causa anemia, caracterizada por fatiga, palidez y dificultad para oxigenar los tejidos."
+          },
+          {
+            text: "Las proteínas están formadas por unidades llamadas:",
+            options: [
+              { letter: "A", text: "Nucleótidos" },
+              { letter: "B", text: "Monosacáridos" },
+              { letter: "C", text: "Aminoácidos" },
+              { letter: "D", text: "Ácidos grasos" }
+            ],
+            correct: "C",
+            explanation: "Las proteínas son polímeros de aminoácidos unidos por enlaces peptídicos. Existen 20 aminoácidos diferentes, y su secuencia determina la estructura y función de cada proteína."
+          },
+          {
+            text: "¿Cuál de las siguientes vitaminas es liposoluble y necesita grasas para su absorción?",
+            options: [
+              { letter: "A", text: "Vitamina C" },
+              { letter: "B", text: "Vitamina B12" },
+              { letter: "C", text: "Vitamina D" },
+              { letter: "D", text: "Ácido fólico" }
+            ],
+            correct: "C",
+            explanation: "La vitamina D es liposoluble (junto con A, E y K), lo que significa que se disuelve en grasas. Por eso, dietas muy bajas en grasas pueden dificultar la absorción de estas vitaminas esenciales."
+          },
+          {
+            text: "DESAFÍO DE APLICACIÓN: Un estudiante consume solo comida rápida (alta en grasas saturadas y sodio, baja en fibra y vitaminas). ¿Qué consecuencias a largo plazo podría enfrentar?",
+            options: [
+              { letter: "A", text: "Mayor resistencia física y mejor digestión" },
+              { letter: "B", text: "Riesgo de obesidad, hipertensión y problemas digestivos" },
+              { letter: "C", text: "Fortalecimiento del sistema inmune" },
+              { letter: "D", text: "Ninguna, porque obtiene calorías suficientes" }
+            ],
+            correct: "B",
+            explanation: "Una dieta desequilibrada con exceso de grasas saturadas aumenta el colesterol y riesgo cardiovascular. El exceso de sodio eleva la presión arterial. La falta de fibra causa problemas digestivos. Las calorías no compensan la falta de nutrientes esenciales."
+          }
+        ]
+      },
+      {
+        id: 4,
+        title: "Sala del Ecosistema",
+        subtitle: "Ecosistemas y medio ambiente",
+        icon: "trees",
+        questions: [
+          {
+            text: "En una cadena trófica, los organismos que transforman la energía solar en energía química son:",
+            options: [
+              { letter: "A", text: "Consumidores primarios" },
+              { letter: "B", text: "Descomponedores" },
+              { letter: "C", text: "Productores" },
+              { letter: "D", text: "Consumidores terciarios" }
+            ],
+            correct: "C",
+            explanation: "Los productores (plantas, algas, cianobacterias) realizan fotosíntesis, convirtiendo energía luminosa en energía química almacenada en glucosa. Son la base de todas las cadenas tróficas."
+          },
+          {
+            text: "El ciclo del carbono incluye procesos de liberación de CO₂. ¿Cuál de estos NO libera CO₂ a la atmósfera?",
+            options: [
+              { letter: "A", text: "Respiración de animales" },
+              { letter: "B", text: "Combustión de combustibles fósiles" },
+              { letter: "C", text: "Fotosíntesis" },
+              { letter: "D", text: "Descomposición de materia orgánica" }
+            ],
+            correct: "C",
+            explanation: "La fotosíntesis es el único proceso que CONSUME CO₂ (lo fija en moléculas orgánicas). La respiración, combustión y descomposición liberan CO₂. Por eso los bosques son sumideros de carbono."
+          },
+          {
+            text: "La introducción de una especie exótica invasora en un ecosistema puede causar:",
+            options: [
+              { letter: "A", text: "Siempre un aumento de la biodiversidad" },
+              { letter: "B", text: "Competencia con especies nativas y posible extinción local" },
+              { letter: "C", text: "Ningún efecto en el ecosistema" },
+              { letter: "D", text: "Mejora automática del equilibrio ecológico" }
+            ],
+            correct: "B",
+            explanation: "Las especies invasoras pueden competir por recursos, depredar especies nativas, transmitir enfermedades o alterar hábitats. Sin depredadores naturales, pueden multiplicarse descontroladamente y desequilibrar el ecosistema."
+          },
+          {
+            text: "¿Qué es la bioacumulación?",
+            options: [
+              { letter: "A", text: "Acumulación de energía en productores" },
+              { letter: "B", text: "Concentración creciente de sustancias tóxicas en niveles tróficos superiores" },
+              { letter: "C", text: "Reproducción masiva de bacterias" },
+              { letter: "D", text: "Proceso de fotosíntesis acelerada" }
+            ],
+            correct: "B",
+            explanation: "La bioacumulación ocurre cuando contaminantes (como mercurio o pesticidas) se concentran en los tejidos de organismos y aumentan su concentración en cada nivel trófico. Los depredadores tope tienen las mayores concentraciones."
+          },
+          {
+            text: "DESAFÍO DE CAUSA-EFECTO: Si se elimina un depredador tope de un ecosistema, ¿qué efecto cascada podrías predecir?",
+            options: [
+              { letter: "A", text: "Las poblaciones de presas disminuirían" },
+              { letter: "B", text: "Las presas aumentarían, sobreexplotando los recursos y afectando a productores" },
+              { letter: "C", text: "No habría ningún cambio observable" },
+              { letter: "D", text: "Los productores aumentarían inmediatamente" }
+            ],
+            correct: "B",
+            explanation: "Sin control por depredadores, las poblaciones de herbívoros pueden explotar, consumiendo excesivamente la vegetación. Esto puede causar erosión, pérdida de hábitat y colapso de poblaciones por falta de alimento. Es un efecto cascada trófica."
+          }
+        ]
+      },
+      {
+        id: 5,
+        title: "Sala de Mezclas",
+        subtitle: "Mezclas y concentración",
+        icon: "beaker",
+        questions: [
+          {
+            text: "Una solución está formada por un soluto y un solvente. En una solución de sal en agua, ¿cuál es el soluto?",
+            options: [
+              { letter: "A", text: "El agua" },
+              { letter: "B", text: "La sal" },
+              { letter: "C", text: "Ambos por igual" },
+              { letter: "D", text: "Ninguno, no es una solución" }
+            ],
+            correct: "B",
+            explanation: "El soluto es la sustancia que se disuelve (sal) y el solvente es el medio que disuelve (agua). El soluto generalmente está en menor proporción y se dispersa uniformemente en el solvente."
+          },
+          {
+            text: "Si tienes 10 g de azúcar disueltos en 100 mL de agua, ¿cuál es la concentración masa/volumen (m/v)?",
+            options: [
+              { letter: "A", text: "1%" },
+              { letter: "B", text: "10%" },
+              { letter: "C", text: "100%" },
+              { letter: "D", text: "0.1%" }
+            ],
+            correct: "B",
+            explanation: "La concentración m/v se calcula: (masa soluto / volumen solución) × 100 = (10g / 100mL) × 100 = 10%. Esto significa que hay 10 gramos de azúcar por cada 100 mL de solución."
+          },
+          {
+            text: "¿Qué tipo de mezcla es la sangre?",
+            options: [
+              { letter: "A", text: "Solución homogénea" },
+              { letter: "B", text: "Mezcla heterogénea (suspensión y coloide)" },
+              { letter: "C", text: "Sustancia pura" },
+              { letter: "D", text: "Compuesto químico simple" }
+            ],
+            correct: "B",
+            explanation: "La sangre es heterogénea: tiene células (glóbulos) que son suspensiones visibles, proteínas que forman coloides, y sustancias disueltas. No es homogénea porque sus componentes pueden separarse."
+          },
+          {
+            text: "Para separar una mezcla de agua y aceite, ¿qué método sería más apropiado?",
+            options: [
+              { letter: "A", text: "Filtración" },
+              { letter: "B", text: "Decantación con embudo de separación" },
+              { letter: "C", text: "Evaporación" },
+              { letter: "D", text: "Destilación" }
+            ],
+            correct: "B",
+            explanation: "El agua y aceite son líquidos inmiscibles que forman capas separadas por diferencia de densidad. Un embudo de decantación permite drenar el líquido inferior (agua) sin mezclar las fases."
+          },
+          {
+            text: "DESAFÍO DE CÁLCULO: Si diluyes 50 mL de una solución al 20% hasta obtener 200 mL totales, ¿cuál será la nueva concentración?",
+            options: [
+              { letter: "A", text: "5%" },
+              { letter: "B", text: "10%" },
+              { letter: "C", text: "40%" },
+              { letter: "D", text: "80%" }
+            ],
+            correct: "A",
+            explanation: "Al diluir, la cantidad de soluto permanece igual pero el volumen aumenta. C1×V1 = C2×V2, entonces: 20% × 50mL = C2 × 200mL. C2 = 1000/200 = 5%. La concentración disminuye proporcionalmente al aumento de volumen."
+          }
+        ]
+      },
+      {
+        id: 6,
+        title: "Sala de Física",
+        subtitle: "Fuerza y movimiento",
+        icon: "gauge",
+        questions: [
+          {
+            text: "Según la Primera Ley de Newton, un objeto en reposo permanecerá en reposo a menos que:",
+            options: [
+              { letter: "A", text: "Tenga masa suficiente" },
+              { letter: "B", text: "Actúe sobre él una fuerza neta externa" },
+              { letter: "C", text: "Esté en el vacío" },
+              { letter: "D", text: "Tenga forma aerodinámica" }
+            ],
+            correct: "B",
+            explanation: "La Primera Ley (Inercia) establece que los objetos mantienen su estado de movimiento (reposo o movimiento rectilíneo uniforme) a menos que una fuerza neta los obligue a cambiar. Sin fuerza neta, no hay aceleración."
+          },
+          {
+            text: "Si un auto de 1000 kg acelera a 2 m/s², ¿qué fuerza neta actúa sobre él?",
+            options: [
+              { letter: "A", text: "500 N" },
+              { letter: "B", text: "2000 N" },
+              { letter: "C", text: "0.002 N" },
+              { letter: "D", text: "1002 N" }
+            ],
+            correct: "B",
+            explanation: "Aplicando la Segunda Ley de Newton: F = m × a = 1000 kg × 2 m/s² = 2000 N. La fuerza necesaria es directamente proporcional a la masa y la aceleración deseada."
+          },
+          {
+            text: "Dos patinadores de igual masa se empujan mutuamente estando en reposo. ¿Qué observarás?",
+            options: [
+              { letter: "A", text: "Solo uno se moverá" },
+              { letter: "B", text: "Ambos se moverán en direcciones opuestas con igual rapidez" },
+              { letter: "C", text: "Permanecerán en reposo" },
+              { letter: "D", text: "Uno se moverá más rápido que el otro" }
+            ],
+            correct: "B",
+            explanation: "Según la Tercera Ley de Newton (acción-reacción), las fuerzas son iguales y opuestas. Con masas iguales y fuerzas iguales, las aceleraciones serán iguales pero en direcciones opuestas."
+          },
+          {
+            text: "La fricción entre superficies:",
+            options: [
+              { letter: "A", text: "Siempre acelera los objetos" },
+              { letter: "B", text: "Se opone al movimiento relativo entre superficies" },
+              { letter: "C", text: "Solo existe en líquidos" },
+              { letter: "D", text: "Aumenta la velocidad de los objetos" }
+            ],
+            correct: "B",
+            explanation: "La fricción es una fuerza que se opone al movimiento relativo entre dos superficies en contacto. Puede ser estática (evita el inicio del movimiento) o cinética (se opone al movimiento existente)."
+          },
+          {
+            text: "DESAFÍO DE ANÁLISIS: Un paracaidista en caída libre eventualmente alcanza una velocidad terminal constante. ¿Por qué deja de acelerar?",
+            options: [
+              { letter: "A", text: "La gravedad desaparece a cierta altura" },
+              { letter: "B", text: "La resistencia del aire iguala su peso, resultando en fuerza neta cero" },
+              { letter: "C", text: "El paracaídas absorbe toda la energía" },
+              { letter: "D", text: "Alcanza la velocidad máxima permitida por la física" }
+            ],
+            correct: "B",
+            explanation: "A medida que aumenta la velocidad, aumenta la resistencia del aire. Cuando esta resistencia iguala el peso del paracaidista, la fuerza neta es cero, por lo que no hay aceleración (Primera Ley de Newton) y la velocidad se mantiene constante."
+          }
+        ]
+      },
+      {
+        id: 7,
+        title: "Sala de Energía",
+        subtitle: "Energía y calor",
+        icon: "flame",
+        questions: [
+          {
+            text: "¿Cuál es la unidad de medida de energía en el Sistema Internacional?",
+            options: [
+              { letter: "A", text: "Newton (N)" },
+              { letter: "B", text: "Joule (J)" },
+              { letter: "C", text: "Watt (W)" },
+              { letter: "D", text: "Pascal (Pa)" }
+            ],
+            correct: "B",
+            explanation: "El Joule (J) es la unidad SI de energía y trabajo. Un Joule equivale al trabajo realizado por una fuerza de 1 Newton que desplaza un objeto 1 metro en su dirección. El Watt mide potencia (J/s), no energía."
+          },
+          {
+            text: "¿Qué tipo de transferencia de calor ocurre cuando el Sol calienta la Tierra a través del espacio?",
+            options: [
+              { letter: "A", text: "Conducción" },
+              { letter: "B", text: "Convección" },
+              { letter: "C", text: "Radiación" },
+              { letter: "D", text: "Evaporación" }
+            ],
+            correct: "C",
+            explanation: "La radiación es la única forma de transferencia de calor que no requiere un medio material. Las ondas electromagnéticas (infrarrojas principalmente) viajan por el vacío del espacio desde el Sol hasta la Tierra."
+          },
+          {
+            text: "Según la Ley de Conservación de la Energía:",
+            options: [
+              { letter: "A", text: "La energía puede crearse de la nada" },
+              { letter: "B", text: "La energía puede destruirse completamente" },
+              { letter: "C", text: "La energía se transforma pero su cantidad total permanece constante" },
+              { letter: "D", text: "La energía solo existe en forma de calor" }
+            ],
+            correct: "C",
+            explanation: "La energía no se crea ni se destruye, solo se transforma de una forma a otra. En un sistema aislado, la energía total permanece constante, aunque puede cambiar entre cinética, potencial, térmica, etc."
+          },
+          {
+            text: "¿Por qué los metales son buenos conductores de calor?",
+            options: [
+              { letter: "A", text: "Porque son pesados" },
+              { letter: "B", text: "Porque tienen electrones libres que transfieren energía rápidamente" },
+              { letter: "C", text: "Porque absorben toda la luz" },
+              { letter: "D", text: "Porque son brillantes" }
+            ],
+            correct: "B",
+            explanation: "Los metales tienen electrones de valencia libres que pueden moverse fácilmente. Estos electrones transfieren energía cinética rápidamente de las regiones calientes a las frías, haciendo que los metales conduzcan bien el calor y la electricidad."
+          },
+          {
+            text: "DESAFÍO FINAL: Una taza de café caliente se enfría con el tiempo. Describe el flujo de energía según las leyes de la termodinámica.",
+            options: [
+              { letter: "A", text: "El frío del ambiente entra al café" },
+              { letter: "B", text: "El calor fluye del café (mayor T°) al ambiente (menor T°) hasta alcanzar equilibrio térmico" },
+              { letter: "C", text: "La energía desaparece del café" },
+              { letter: "D", text: "El café genera frío espontáneamente" }
+            ],
+            correct: "B",
+            explanation: "Según la Segunda Ley de la Termodinámica, el calor fluye espontáneamente de cuerpos de mayor temperatura a menor temperatura. El café pierde energía térmica hacia el ambiente hasta que ambos alcanzan la misma temperatura (equilibrio térmico)."
+          }
+        ]
+      }
+    ];
+    
+    // Game state
+    let gameState = {
+      currentRoom: 0,
+      currentQuestion: 0,
+      roomProgress: [0, 0, 0, 0, 0, 0, 0],
+      roomCompleted: [false, false, false, false, false, false, false],
+      answeredQuestions: Array(7).fill(null).map(() => []),
+      originalQuestions: []
+    };
+    
+    // Initialize SDK
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange: async (config) => {
+          const titleEl = document.getElementById('main-title');
+          const welcomeEl = document.getElementById('welcome-text');
+          
+          if (titleEl) titleEl.textContent = config.game_title || defaultConfig.game_title;
+          if (welcomeEl) welcomeEl.textContent = config.welcome_message || defaultConfig.welcome_message;
+        },
+        mapToCapabilities: (config) => ({
+          recolorables: [
+            {
+              get: () => config.background_color || defaultConfig.background_color,
+              set: (v) => window.elementSdk.setConfig({ background_color: v })
+            },
+            {
+              get: () => config.accent_color || defaultConfig.accent_color,
+              set: (v) => window.elementSdk.setConfig({ accent_color: v })
+            },
+            {
+              get: () => config.text_color || defaultConfig.text_color,
+              set: (v) => window.elementSdk.setConfig({ text_color: v })
+            },
+            {
+              get: () => config.primary_color || defaultConfig.primary_color,
+              set: (v) => window.elementSdk.setConfig({ primary_color: v })
+            },
+            {
+              get: () => config.secondary_color || defaultConfig.secondary_color,
+              set: (v) => window.elementSdk.setConfig({ secondary_color: v })
+            }
+          ],
+          borderables: [],
+          fontEditable: undefined,
+          fontSizeable: undefined
+        }),
+        mapToEditPanelValues: (config) => new Map([
+          ["game_title", config.game_title || defaultConfig.game_title],
+          ["welcome_message", config.welcome_message || defaultConfig.welcome_message]
+        ])
+      });
+    }
+    
+    // Initialize Lucide icons
+    lucide.createIcons();
+    
+    // Game functions
+    function startGame() {
+      document.getElementById('start-screen').classList.add('hidden');
+      showRoomSelection();
+    }
+    
+    function showRoomSelection() {
+      document.getElementById('start-screen').classList.add('hidden');
+      document.getElementById('game-screen').classList.add('hidden');
+      document.getElementById('victory-screen').classList.add('hidden');
+      document.getElementById('room-selection').classList.remove('hidden');
+      
+      renderRooms();
+      updateOverallProgress();
+    }
+    
+    function renderRooms() {
+      const container = document.getElementById('rooms-grid');
+      container.innerHTML = '';
+      
+      const icons = ['dna', 'heart-pulse', 'apple', 'trees', 'beaker', 'gauge', 'flame'];
+      
+      rooms.forEach((room, index) => {
+        const isLocked = index > 0 && !gameState.roomCompleted[index - 1];
+        const isCompleted = gameState.roomCompleted[index];
+        const progress = gameState.roomProgress[index];
+        
+        const card = document.createElement('div');
+        card.className = `room-card bg-slate-900/80 border ${isCompleted ? 'border-emerald-500/50' : isLocked ? 'border-slate-700/50 opacity-60' : 'border-cyan-500/30'} rounded-xl p-5 cursor-pointer ${isLocked ? 'locked' : ''}`;
+        
+        if (!isLocked) {
+          card.onclick = () => {
+            if (isCompleted) {
+              showRoomRetryOptions(index);
+            } else {
+              enterRoom(index);
+            }
+          };
+        }
+        
+        card.innerHTML = `
+          <div class="flex items-start justify-between mb-4">
+            <div class="w-12 h-12 ${isCompleted ? 'bg-emerald-500/20' : 'bg-cyan-500/20'} rounded-xl flex items-center justify-center">
+              <i data-lucide="${icons[index]}" class="w-6 h-6 ${isCompleted ? 'text-emerald-400' : 'text-cyan-400'}"></i>
+            </div>
+            ${isLocked ? '<i data-lucide="lock" class="w-5 h-5 text-slate-500"></i>' : isCompleted ? '<i data-lucide="check-circle" class="w-5 h-5 text-emerald-400"></i>' : ''}
+          </div>
+          <h3 class="title-font font-bold text-white mb-1">Sala ${index + 1}</h3>
+          <p class="text-sm text-slate-400 mb-3">${room.title}</p>
+          <div class="h-1.5 bg-slate-800 rounded-full overflow-hidden">
+            <div class="h-full ${isCompleted ? 'bg-emerald-500' : 'bg-cyan-500'} rounded-full transition-all" style="width: ${progress}%"></div>
+          </div>
+          <p class="text-xs text-slate-500 mt-2">${Math.round(progress)}% completado</p>
+        `;
+        
+        container.appendChild(card);
+      });
+      
+      lucide.createIcons();
+    }
+    
+    function updateOverallProgress() {
+      const total = gameState.roomProgress.reduce((a, b) => a + b, 0);
+      const percentage = Math.round(total / 7);
+      document.getElementById('overall-progress').textContent = `${percentage}%`;
+    }
+    
+    function enterRoom(roomIndex, isRetry = false) {
+      gameState.currentRoom = roomIndex;
+      
+      if (isRetry) {
+        // Reset room progress for retry
+        gameState.answeredQuestions[roomIndex] = [];
+        gameState.currentQuestion = 0;
+        gameState.roomProgress[roomIndex] = 0;
+      } else {
+        gameState.currentQuestion = gameState.answeredQuestions[roomIndex].length;
+      }
+      
+      document.getElementById('room-selection').classList.add('hidden');
+      document.getElementById('game-screen').classList.remove('hidden');
+      
+      updateRoomUI();
+      showQuestion();
+    }
+    
+    function showRoomRetryOptions(roomIndex) {
+      const room = rooms[gameState.currentRoom];
+      
+      // Create modal overlay
+      const modal = document.createElement('div');
+      modal.className = 'fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4';
+      modal.id = 'retry-modal';
+      
+      modal.innerHTML = `
+        <div class="bg-slate-900 border border-cyan-500/50 rounded-2xl p-8 max-w-md w-full">
+          <h3 class="title-font text-2xl font-bold text-white mb-4">Sala Completada</h3>
+          <p class="text-slate-300 mb-6">¿Qué deseas hacer?</p>
+          
+          <div class="space-y-3">
+            <button onclick="repeatSameQuestions(${roomIndex})" class="w-full bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/50 text-cyan-400 font-semibold py-3 px-4 rounded-xl transition-all flex items-center justify-center gap-2">
+              <i data-lucide="repeat-2" class="w-5 h-5"></i>
+              Repetir las mismas preguntas
+            </button>
+            
+            <button onclick="repeatNewQuestions(${roomIndex})" class="w-full bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/50 text-emerald-400 font-semibold py-3 px-4 rounded-xl transition-all flex items-center justify-center gap-2">
+              <i data-lucide="zap" class="w-5 h-5"></i>
+              Preguntas nuevas
+            </button>
+            
+            <button onclick="closeRetryModal()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold py-3 px-4 rounded-xl transition-all flex items-center justify-center gap-2">
+              <i data-lucide="x" class="w-5 h-5"></i>
+              Volver al mapa
+            </button>
+          </div>
+        </div>
+      `;
+      
+      document.getElementById('app').appendChild(modal);
+      lucide.createIcons();
+    }
+    
+    function closeRetryModal() {
+      const modal = document.getElementById('retry-modal');
+      if (modal) modal.remove();
+    }
+    
+    function repeatSameQuestions(roomIndex) {
+      closeRetryModal();
+      enterRoom(roomIndex, true);
+    }
+    
+    function repeatNewQuestions(roomIndex) {
+      closeRetryModal();
+      // Generate new questions for the room
+      generateNewQuestions(roomIndex);
+      enterRoom(roomIndex, true);
+    }
+    
+    function generateNewQuestions(roomIndex) {
+      // Store original questions
+      if (!gameState.originalQuestions) {
+        gameState.originalQuestions = [];
+      }
+      
+      if (!gameState.originalQuestions[roomIndex]) {
+        gameState.originalQuestions[roomIndex] = JSON.parse(JSON.stringify(rooms[roomIndex].questions));
+      }
+      
+      // Generate new questions by shuffling options and changing some values
+      rooms[roomIndex].questions = rooms[roomIndex].questions.map(q => ({
+        ...q,
+        options: shuffleArray([...q.options])
+      }));
+    }
+    
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+    
+    function updateRoomUI() {
+      const room = rooms[gameState.currentRoom];
+      const icons = ['dna', 'heart-pulse', 'apple', 'trees', 'beaker', 'gauge', 'flame'];
+      
+      document.getElementById('current-room-num').textContent = gameState.currentRoom + 1;
+      document.getElementById('room-title').textContent = room.title;
+      document.getElementById('room-subtitle').textContent = room.subtitle;
+      
+      const iconContainer = document.getElementById('room-icon-container');
+      iconContainer.innerHTML = `<i data-lucide="${icons[gameState.currentRoom]}" class="w-7 h-7 text-cyan-400"></i>`;
+      
+      lucide.createIcons();
+    }
+    
+    function showQuestion() {
+      const room = rooms[gameState.currentRoom];
+      const question = room.questions[gameState.currentQuestion];
+      
+      document.getElementById('current-question-num').textContent = gameState.currentQuestion + 1;
+      document.getElementById('question-text').textContent = question.text;
+      
+      const progress = ((gameState.currentQuestion) / room.questions.length) * 100;
+      document.getElementById('room-progress-bar').style.width = `${progress}%`;
+      
+      const optionsContainer = document.getElementById('options-container');
+      optionsContainer.innerHTML = '';
+      
+      question.options.forEach(option => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn w-full text-left p-4 bg-slate-800/50 border border-slate-700 rounded-xl hover:border-cyan-500/50 transition-all';
+        btn.innerHTML = `
+          <div class="flex items-center gap-4">
+            <span class="title-font w-10 h-10 bg-slate-700 rounded-lg flex items-center justify-center text-cyan-400 font-bold flex-shrink-0">${option.letter}</span>
+            <span class="text-slate-200">${option.text}</span>
+          </div>
+        `;
+        btn.onclick = () => selectAnswer(option.letter, btn);
+        optionsContainer.appendChild(btn);
+      });
+      
+      document.getElementById('feedback-panel').classList.add('hidden');
+      document.getElementById('question-card').classList.remove('hidden');
+    }
+    
+    function selectAnswer(letter, btnElement) {
+      const room = rooms[gameState.currentRoom];
+      const question = room.questions[gameState.currentQuestion];
+      const isCorrect = letter === question.correct;
+      
+      // Disable all buttons
+      const allBtns = document.querySelectorAll('.option-btn');
+      allBtns.forEach(btn => {
+        btn.disabled = true;
+        btn.style.pointerEvents = 'none';
+      });
+      
+      // Mark correct and wrong answers
+      allBtns.forEach(btn => {
+        const btnLetter = btn.querySelector('.title-font').textContent;
+        if (btnLetter === question.correct) {
+          btn.classList.add('correct-answer');
+        } else if (btnLetter === letter && !isCorrect) {
+          btn.classList.add('wrong-answer');
+        }
+      });
+      
+      // Show feedback
+      const feedbackPanel = document.getElementById('feedback-panel');
+      const feedbackIcon = document.getElementById('feedback-icon');
+      const feedbackTitle = document.getElementById('feedback-title');
+      const feedbackText = document.getElementById('feedback-text');
+      
+      if (isCorrect) {
+        feedbackPanel.className = 'bg-slate-900/80 border border-emerald-500/50 rounded-2xl p-6 mb-6';
+        feedbackIcon.className = 'w-12 h-12 bg-emerald-500/20 rounded-xl flex items-center justify-center flex-shrink-0';
+        feedbackIcon.innerHTML = '<i data-lucide="check" class="w-6 h-6 text-emerald-400"></i>';
+        feedbackTitle.className = 'title-font text-xl font-bold mb-2 text-emerald-400';
+        feedbackTitle.textContent = '¡Correcto!';
+      } else {
+        feedbackPanel.className = 'bg-slate-900/80 border border-amber-500/50 rounded-2xl p-6 mb-6';
+        feedbackIcon.className = 'w-12 h-12 bg-amber-500/20 rounded-xl flex items-center justify-center flex-shrink-0';
+        feedbackIcon.innerHTML = '<i data-lucide="lightbulb" class="w-6 h-6 text-amber-400"></i>';
+        feedbackTitle.className = 'title-font text-xl font-bold mb-2 text-amber-400';
+        feedbackTitle.textContent = 'No exactamente...';
+      }
+      
+      feedbackText.textContent = question.explanation;
+      feedbackPanel.classList.remove('hidden');
+      
+      lucide.createIcons();
+      
+      // Update game state
+      gameState.answeredQuestions[gameState.currentRoom].push(letter);
+    }
+    
+    function nextQuestion() {
+      const room = rooms[gameState.currentRoom];
+      gameState.currentQuestion++;
+      
+      // Update progress
+      gameState.roomProgress[gameState.currentRoom] = (gameState.currentQuestion / room.questions.length) * 100;
+      
+      if (gameState.currentQuestion >= room.questions.length) {
+        // Room completed
+        gameState.roomCompleted[gameState.currentRoom] = true;
+        gameState.currentQuestion = 0;
+        
+        // Check if all rooms completed
+        if (gameState.roomCompleted.every(c => c)) {
+          showVictory();
+        } else {
+          showRoomSelection();
+        }
+      } else {
+        showQuestion();
+      }
+    }
+    
+    function showVictory() {
+      document.getElementById('game-screen').classList.add('hidden');
+      document.getElementById('room-selection').classList.add('hidden');
+      document.getElementById('victory-screen').classList.remove('hidden');
+    }
+    
+    function resetGame() {
+      gameState = {
+        currentRoom: 0,
+        currentQuestion: 0,
+        roomProgress: [0, 0, 0, 0, 0, 0, 0],
+        roomCompleted: [false, false, false, false, false, false, false],
+        answeredQuestions: Array(7).fill(null).map(() => []),
+        originalQuestions: []
+      };
+      
+      // Restore original questions if they were modified
+      if (gameState.originalQuestions) {
+        rooms.forEach((room, index) => {
+          if (gameState.originalQuestions[index]) {
+            rooms[index].questions = JSON.parse(JSON.stringify(gameState.originalQuestions[index]));
+          }
+        });
+      }
+      
+      document.getElementById('victory-screen').classList.add('hidden');
+      document.getElementById('start-screen').classList.remove('hidden');
+    }
+    
+    function goToMainMenu() {
+      closeMenuModal();
+      document.getElementById('game-screen').classList.add('hidden');
+      document.getElementById('room-selection').classList.add('hidden');
+      document.getElementById('start-screen').classList.remove('hidden');
+    }
+    
+    function showMenuModal() {
+      const modal = document.createElement('div');
+      modal.className = 'fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4';
+      modal.id = 'menu-modal';
+      
+      modal.innerHTML = `
+        <div class="bg-slate-900 border border-cyan-500/50 rounded-2xl p-8 max-w-md w-full">
+          <h3 class="title-font text-2xl font-bold text-white mb-6">Menú Principal</h3>
+          
+          <div class="space-y-3">
+            <button onclick="closeMenuModal()" class="w-full bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/50 text-cyan-400 font-semibold py-3 px-4 rounded-xl transition-all flex items-center justify-center gap-2">
+              <i data-lucide="x" class="w-5 h-5"></i>
+              Continuar jugando
+            </button>
+            
+            <button onclick="goToRoomSelection()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold py-3 px-4 rounded-xl transition-all flex items-center justify-center gap-2">
+              <i data-lucide="map" class="w-5 h-5"></i>
+              Ver mapa de salas
+            </button>
+            
+            <button onclick="goToMainMenu()" class="w-full bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/50 text-amber-400 font-semibold py-3 px-4 rounded-xl transition-all flex items-center justify-center gap-2">
+              <i data-lucide="home" class="w-5 h-5"></i>
+              Volver al menú
+            </button>
+            
+            <button onclick="confirmRestart()" class="w-full bg-red-500/20 hover:bg-red-500/30 border border-red-500/50 text-red-400 font-semibold py-3 px-4 rounded-xl transition-all flex items-center justify-center gap-2">
+              <i data-lucide="rotate-ccw" class="w-5 h-5"></i>
+              Reiniciar juego
+            </button>
+          </div>
+        </div>
+      `;
+      
+      document.getElementById('app').appendChild(modal);
+      lucide.createIcons();
+    }
+    
+    function closeMenuModal() {
+      const modal = document.getElementById('menu-modal');
+      if (modal) modal.remove();
+    }
+    
+    function goToRoomSelection() {
+      closeMenuModal();
+      document.getElementById('game-screen').classList.add('hidden');
+      showRoomSelection();
+    }
+    
+    function confirmRestart() {
+      const modal = document.getElementById('menu-modal');
+      if (modal) modal.remove();
+      
+      const confirmModal = document.createElement('div');
+      confirmModal.className = 'fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4';
+      confirmModal.id = 'confirm-modal';
+      
+      confirmModal.innerHTML = `
+        <div class="bg-slate-900 border border-amber-500/50 rounded-2xl p-8 max-w-md w-full">
+          <h3 class="title-font text-2xl font-bold text-white mb-4">¿Reiniciar juego?</h3>
+          <p class="text-slate-300 mb-6">Se perderá todo el progreso actual. ¿Estás seguro?</p>
+          
+          <div class="space-y-3">
+            <button onclick="confirmResetGame()" class="w-full bg-red-500/20 hover:bg-red-500/30 border border-red-500/50 text-red-400 font-semibold py-3 px-4 rounded-xl transition-all flex items-center justify-center gap-2">
+              <i data-lucide="trash-2" class="w-5 h-5"></i>
+              Sí, reiniciar
+            </button>
+            
+            <button onclick="closeConfirmModal()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold py-3 px-4 rounded-xl transition-all flex items-center justify-center gap-2">
+              <i data-lucide="x" class="w-5 h-5"></i>
+              Cancelar
+            </button>
+          </div>
+        </div>
+      `;
+      
+      document.getElementById('app').appendChild(confirmModal);
+      lucide.createIcons();
+    }
+    
+    function closeConfirmModal() {
+      const modal = document.getElementById('confirm-modal');
+      if (modal) modal.remove();
+    }
+    
+    function confirmResetGame() {
+      closeConfirmModal();
+      resetGame();
+    }
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e3f364b938cb52c',t:'MTc3NDc5MDg0Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
